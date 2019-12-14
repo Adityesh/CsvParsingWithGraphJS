@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="800" height="400"></canvas>
+<script>
+    
+const xLabels = []
+const yTemps = []
+chartIt()
+
+    async function chartIt(){
+        await getData()
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: xLabels,
+                datasets: [{
+                    label: 'Combined Land-Surface Air and Sea-Surface Water Temperature °C',
+                    data: yTemps,
+                    fill:false,
+                    backgroundColor: 
+                        'rgba(255, 99, 132, 0.2)',
+                    borderColor: 
+                        'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, values) {
+                        return value + '°C';
+                    }
+                }
+            }]
+        }
+    }
+            
+        });
+
+
+
+    }
+
+
+        
+    
+        async function getData(){
+            const response = await fetch('dataset.csv')
+            const data = await response.text()
+            
+
+            const table = data.split('\n').slice(1)
+            //console.log(rows);
+            
+            table.forEach(elt => {
+                const columns = elt.split(",")
+                const temp = columns[1];
+                const year = columns[0];
+                xLabels.push(year)
+                yTemps.push(parseFloat(temp) + 14)
+
+                
+                
+                
+            })
+            
+            
+        }
+    
+    
+    </script>
+    
+</body>
+</html>
